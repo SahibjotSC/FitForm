@@ -1,0 +1,86 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'de.undercouch.download'
+}
+
+android {
+    namespace = "com.example.fitform"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.example.fitform"
+        minSdk = 26
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+// import DownloadMPTasks task
+project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
+apply from: 'download_tasks.gradle'
+
+dependencies {
+
+    implementation libs.tasks.vision
+
+    // Kotlin lang
+    implementation libs.core.ktx
+
+    // App compat and UI things
+    implementation libs.appcompat.v151
+    implementation libs.material.v170
+    implementation libs.constraintlayout.v220
+    implementation libs.fragment.ktx
+
+    // Navigation library
+    def nav_version = "2.5.3"
+    implementation libs.navigation.fragment.ktx
+    implementation libs.navigation.ui.ktx
+
+    // CameraX core library
+    def camerax_version = '1.2.0-alpha02'
+    implementation libs.camera.core
+
+    // CameraX Camera2 extensions
+    implementation libs.camera.camera2
+
+    // CameraX Lifecycle library
+    implementation libs.camera.lifecycle
+
+    // CameraX View class
+    implementation libs.camera.view
+
+    // WindowManager
+    implementation libs.window
+
+    // Unit testing
+    testImplementation libs.junit
+
+    // Instrumented testing
+    androidTestImplementation libs.junit.v113
+    androidTestImplementation libs.espresso.core.v340
+
+    // MediaPipe Library
+    implementation libs.tasks.vision.v01014
+}
