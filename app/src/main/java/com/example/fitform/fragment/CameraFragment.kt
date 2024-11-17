@@ -9,21 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
-import androidx.camera.core.Preview
+import androidx.camera.core.AspectRatio
+import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Camera
-import androidx.camera.core.AspectRatio
+import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
-import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.MainViewModel
+import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
+import com.example.fitform.exercise.PushUp
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -35,6 +36,8 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     companion object {
         private const val TAG = "Pose Landmarker"
     }
+
+    private val pushUpTracker = PushUp()
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
 
@@ -368,6 +371,13 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
             if (_fragmentCameraBinding != null) {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
+
+                val pushUpCount = pushUpTracker.trackPush(resultBundle)
+
+                fragmentCameraBinding.countText.text = pushUpCount.count.toString()
+                fragmentCameraBinding.accuracyText.text = String.format("%.2f", pushUpCount.accuracy) + "%"
+                fragmentCameraBinding.tipText.text = pushUpCount.tip
+
 
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(
