@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.fitform"
-        minSdk = 26
+        minSdk = 25
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -41,6 +41,8 @@ project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
 apply from: 'download_tasks.gradle'
 
 dependencies {
+
+    implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
 
     implementation libs.tasks.vision
 

@@ -50,8 +50,13 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
     override fun draw(canvas: Canvas) {
         super.draw(canvas)
         results?.let { poseLandmarkerResult ->
+
+            val specificLandmarkIndices = listOf(24, 26, 28, 23, 25, 27)
+
             for(landmark in poseLandmarkerResult.landmarks()) {
-                for(normalizedLandmark in landmark) {
+                for ((index, normalizedLandmark) in landmark.withIndex()) {
+                    if (index !in specificLandmarkIndices) continue
+
                     canvas.drawPoint(
                         normalizedLandmark.x() * imageWidth * scaleFactor,
                         normalizedLandmark.y() * imageHeight * scaleFactor,
@@ -60,6 +65,8 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
                 }
 
                 PoseLandmarker.POSE_LANDMARKS.forEach {
+                    if (it!!.start() !in specificLandmarkIndices || it.end() !in specificLandmarkIndices) return@forEach
+
                     canvas.drawLine(
                         poseLandmarkerResult.landmarks().get(0).get(it!!.start()).x() * imageWidth * scaleFactor,
                         poseLandmarkerResult.landmarks().get(0).get(it.start()).y() * imageHeight * scaleFactor,

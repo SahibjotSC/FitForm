@@ -2,6 +2,7 @@ package com.example.fitform.fragment
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -24,8 +25,9 @@ import com.example.fitform.MainViewModel
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
-import com.example.fitform.exercise.PushUp
+import com.example.fitform.exercise.Situps
 import com.google.mediapipe.tasks.vision.core.RunningMode
+import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -37,7 +39,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         private const val TAG = "Pose Landmarker"
     }
 
-    private val pushUpTracker = PushUp()
+    private val pushUpTracker = Situps()
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
 
@@ -372,12 +374,19 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
 
-                val pushUpCount = pushUpTracker.trackPush(resultBundle)
+                val pushUpCount = pushUpTracker.track(resultBundle)
 
                 fragmentCameraBinding.countText.text = pushUpCount.count.toString()
-                fragmentCameraBinding.accuracyText.text = String.format("%.2f", pushUpCount.accuracy) + "%"
+                fragmentCameraBinding.circularProgressBar.progress = pushUpCount.progress.toFloat()
+                if (pushUpCount.direction)
+                {
+                    fragmentCameraBinding.circularProgressBar.progressBarColor = Color.GREEN
+                }
+                else
+                {
+                    fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
+                }
                 fragmentCameraBinding.tipText.text = pushUpCount.tip
-
 
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(

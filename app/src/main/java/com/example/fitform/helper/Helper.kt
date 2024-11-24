@@ -1,17 +1,27 @@
 package com.example.fitform.helper
 
 import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
+import kotlin.math.abs
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Helper {
     companion object {
         fun interpolate(
             value: Double,
             low: Double,
-            high: Double,
-            targetLow: Double,
-            targetHigh: Double
+            high: Double
         ): Double {
-            return targetLow + (value - low) * (targetHigh - targetLow) / (high - low)
+            return clamp(((1 - ((value - low) / (high - low))) * 100), 0.0, 100.0)
+        }
+
+        fun clamp(value: Double, min: Double, max: Double): Double {
+            return when {
+                value < min -> min
+                value > max -> max
+                else -> value
+            }
         }
 
         fun findAngle(
@@ -44,6 +54,15 @@ class Helper {
             }
 
             return angle
+        }
+
+        fun calculateAverageAngle(angles: List<Double>): Double {
+            if (angles.isEmpty()) return 0.0
+
+            val sumX = angles.sumOf { cos(Math.toRadians(it)) }
+            val sumY = angles.sumOf { sin(Math.toRadians(it)) }
+
+            return Math.toDegrees(atan2(sumY, sumX))
         }
     }
 }
