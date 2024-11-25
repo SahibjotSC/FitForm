@@ -14,9 +14,10 @@
     ~ limitations under the License.
 -->
 <resources>
-    <string name="app_name">Pose Landmarker</string>
+    <string name="app_name">FitForm</string>
 
-    <string name="media_pipe">MediaPipe</string>
+    <string name="open_nav">Open Navigation Drawer</string>
+    <string name="close_nav">Close Navigation Drawer</string>
 
     <string name="alt_bottom_sheet_chevron">Bottom sheet expandable indicator</string>
 
@@ -146,4 +147,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
