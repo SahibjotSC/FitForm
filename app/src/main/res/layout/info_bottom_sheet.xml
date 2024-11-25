@@ -1,10 +1,11 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    android:background="@color/bottom_sheet_background"
+    android:background="#1F1E24"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     android:padding="@dimen/bottom_sheet_padding"
@@ -18,6 +19,7 @@
         android:orientation="vertical">
 
         <!-- Chevron indicating that the bottom sheet is expandable -->
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -25,13 +27,87 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
+                android:layout_centerInParent="true"
                 android:contentDescription="@string/alt_bottom_sheet_chevron"
                 android:src="@drawable/icn_chevron_up" />
         </RelativeLayout>
 
+        <HorizontalScrollView
+            android:id="@+id/horizontalScrollView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
         <!-- Inference time row -->
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView9"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageView10"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    tools:srcCompat="@tools:sample/avatars" />
+            </LinearLayout>
+        </ScrollView>
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/label_inference_time"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <TextView
@@ -54,7 +130,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="end"
                 android:text="0ms"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -71,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/label_pose_detection_confidence_threshold"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <LinearLayout
@@ -96,7 +172,7 @@
                     android:layout_marginRight="@dimen/bottom_sheet_control_text_side_margin"
                     android:gravity="center"
                     android:minEms="@integer/bottom_sheet_control_text_min_ems"
-                    android:textColor="@color/bottom_sheet_text_color"
+                    android:textColor="#D8D9D8"
                     android:textSize="@dimen/bottom_sheet_text_size" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
@@ -120,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/label_pose_tracking_confidence_threshold"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <LinearLayout
@@ -145,7 +221,7 @@
                     android:layout_marginRight="@dimen/bottom_sheet_control_text_side_margin"
                     android:gravity="center"
                     android:minEms="@integer/bottom_sheet_control_text_min_ems"
-                    android:textColor="@color/bottom_sheet_text_color"
+                    android:textColor="#D8D9D8"
                     android:textSize="@dimen/bottom_sheet_text_size" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
@@ -169,7 +245,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:text="@string/label_pose_presence_confidence_threshold"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <LinearLayout
@@ -194,7 +270,7 @@
                     android:layout_marginRight="@dimen/bottom_sheet_control_text_side_margin"
                     android:gravity="center"
                     android:minEms="@integer/bottom_sheet_control_text_min_ems"
-                    android:textColor="@color/bottom_sheet_text_color"
+                    android:textColor="#D8D9D8"
                     android:textSize="@dimen/bottom_sheet_text_size" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
@@ -213,21 +289,21 @@
             android:layout_marginTop="@dimen/bottom_sheet_default_row_margin">
 
             <TextView
-                android:text="@string/label_models"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/bottom_sheet_text_size"
-                android:textColor="@color/bottom_sheet_text_color" />
+                android:text="@string/label_models"
+                android:textColor="#D8D9D8"
+                android:textSize="@dimen/bottom_sheet_text_size" />
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinner_model"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:entries="@array/models_spinner_titles"
                 android:minWidth="@dimen/bottom_sheet_spinner_model_min_width"
                 android:spinnerMode="dropdown"
-                android:theme="@style/BottomSheetSpinnerItemStyle"
-                android:layout_alignParentRight="true"
-                android:entries="@array/models_spinner_titles"/>
+                android:theme="@style/BottomSheetSpinnerItemStyle" />
 
         </RelativeLayout>
 
@@ -241,7 +317,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_delegate"
-                android:textColor="@color/bottom_sheet_text_color"
+                android:textColor="#D8D9D8"
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
             <androidx.appcompat.widget.AppCompatSpinner
@@ -255,5 +331,6 @@
                 android:theme="@style/BottomSheetSpinnerItemStyle" />
 
         </RelativeLayout>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.core.widget.NestedScrollView>

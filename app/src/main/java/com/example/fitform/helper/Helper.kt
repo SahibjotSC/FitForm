@@ -47,11 +47,7 @@ class Helper {
                         Math.atan2((y1 - y2).toDouble(), (x1 - x2).toDouble())
             )
 
-            if (angle < 0) {
-                angle = Math.abs(angle)
-            } else {
-                angle = 360 - angle
-            }
+            angle = if (angle > 180) 360 - angle else angle
 
             return angle
         }

@@ -2,6 +2,7 @@ package com.example.fitform.exercise
 
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.helper.Helper
+import kotlin.math.abs
 
 class Situps {
     
@@ -16,8 +17,9 @@ class Situps {
         var tip = "Nothing detected"
 
         if (lmList.isNotEmpty()) {
-            //val angle = Helper.findAngle(lmList, 11, 13, 15)
-            val angle = Helper.findAngle(lmList, 24, 26, 28)
+            val rightAngle = Helper.findAngle(lmList, 24, 26, 28)
+            val leftAngle = Helper.findAngle(lmList, 23, 25, 27)
+            val angle = (rightAngle + leftAngle) / 2
 
             angleHistory.add(angle)
             if (angleHistory.size > maxHistorySize) {
@@ -25,6 +27,7 @@ class Situps {
             }
 
             val averageAngle = Helper.calculateAverageAngle(angleHistory)
+            //val averageAngle = angle
 
             val low = 40
             val high = 150
@@ -37,7 +40,12 @@ class Situps {
                 direction = false
             }
 
-            tip = "Average angle: %.2f".format(averageAngle) + "\n $progress";
+            tip = "Average angle: %.2f".format(averageAngle) +
+                    "\n $progress" +
+                    "\n $rightAngle" +
+                    "\n $leftAngle" +
+                    "\n $angle"
+            ;
         }
 
         return Stats(count, progress, direction, tip)

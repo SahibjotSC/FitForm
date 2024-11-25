@@ -27,7 +27,6 @@ import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
 import com.example.fitform.exercise.Situps
 import com.google.mediapipe.tasks.vision.core.RunningMode
-import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -374,11 +373,11 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
 
-                val pushUpCount = pushUpTracker.track(resultBundle)
+                val situpCount = pushUpTracker.track(resultBundle)
 
-                fragmentCameraBinding.countText.text = pushUpCount.count.toString()
-                fragmentCameraBinding.circularProgressBar.progress = pushUpCount.progress.toFloat()
-                if (pushUpCount.direction)
+                fragmentCameraBinding.countText.text = situpCount.count.toString()
+                fragmentCameraBinding.circularProgressBar.progress = situpCount.progress.toFloat()
+                if (situpCount.direction)
                 {
                     fragmentCameraBinding.circularProgressBar.progressBarColor = Color.GREEN
                 }
@@ -386,7 +385,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 {
                     fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
                 }
-                fragmentCameraBinding.tipText.text = pushUpCount.tip
+                fragmentCameraBinding.tipText.text = situpCount.tip
 
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(

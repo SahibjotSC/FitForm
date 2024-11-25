@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/camera_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#AF0000">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/view_finder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:scaleType="fillStart"/>
+        app:scaleType="fillStart" />
 
     <com.example.fitform.OverlayView
         android:id="@+id/overlay"
@@ -27,8 +28,8 @@
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
 
 
         <TextView
@@ -48,32 +49,39 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="50dp"
-        android:background="@drawable/back"
+        android:background="@drawable/text_background"
         android:gravity="center"
         android:minHeight="40dp"
         android:text="Tip: "
         android:textAlignment="center"
+        android:textColor="#D1D1D1"
         android:textSize="24sp" />
-
-    <include
-        android:id="@+id/bottom_sheet_layout"
-        layout="@layout/info_bottom_sheet" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="70dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/progress_background" />
+
         <com.mikhaellopez.circularprogressbar.CircularProgressBar
             android:id="@+id/circularProgressBar"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginBottom="60dp"
+            android:layout_marginBottom="70dp"
             app:cpb_background_progressbar_color="#293B3E"
             app:cpb_background_progressbar_width="30dp"
-            app:cpb_progress="30"
+            app:cpb_progress="0"
             app:cpb_progress_direction="to_right"
             app:cpb_progress_max="100"
             app:cpb_progressbar_color="#8BC34A"
@@ -87,14 +95,19 @@
             android:id="@+id/countText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="110dp"
-            android:background="@drawable/back"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/progress_background"
             android:padding="5dp"
             android:text="0"
+            android:textColor="#DBDBDB"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/bottom_sheet_layout"
+        layout="@layout/info_bottom_sheet" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
