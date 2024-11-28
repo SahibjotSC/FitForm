@@ -23,6 +23,16 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar"
+            android:visibility="gone"
+            app:itemIconTint="@color/bg_nav_item"
+            app:itemTextColor="@color/bg_nav_item"
+            app:menu="@menu/menu_bottom_nav" />
+
         <!-- First NavHostFragment for main navigation -->
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
