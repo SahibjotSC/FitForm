@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.Button
 import android.widget.Toast
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
@@ -25,7 +26,10 @@ import com.example.fitform.MainViewModel
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
+import com.example.fitform.exercise.Pushups
 import com.example.fitform.exercise.Situps
+import com.example.fitform.exercise.Stats
+import com.example.fitform.exercise.Type
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -36,9 +40,11 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Pose Landmarker"
+        var exerciseType: Type = Type.Squats
     }
 
-    private val pushUpTracker = Situps()
+    private val situpsTracker = Situps()
+    private val pushUpTracker = Pushups()
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
 
@@ -373,11 +379,13 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
 
-                val situpCount = pushUpTracker.track(resultBundle)
+                var exerciseInfo: Stats
+                if (exerciseType == Type.Squats) exerciseInfo = situpsTracker.track(resultBundle)
+                else exerciseInfo = pushUpTracker.track(resultBundle)
 
-                fragmentCameraBinding.countText.text = situpCount.count.toString()
-                fragmentCameraBinding.circularProgressBar.progress = situpCount.progress.toFloat()
-                if (situpCount.direction)
+                fragmentCameraBinding.countText.text = exerciseInfo.count.toString()
+                fragmentCameraBinding.circularProgressBar.progress = exerciseInfo.progress.toFloat()
+                if (exerciseInfo.direction)
                 {
                     fragmentCameraBinding.circularProgressBar.progressBarColor = Color.GREEN
                 }
@@ -385,7 +393,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 {
                     fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
                 }
-                fragmentCameraBinding.tipText.text = situpCount.tip
+                fragmentCameraBinding.tipText.text = exerciseInfo.tip
 
                 // Pass necessary information to OverlayView for drawing on the canvas
                 fragmentCameraBinding.overlay.setResults(

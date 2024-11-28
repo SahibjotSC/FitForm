@@ -7,6 +7,8 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
+import com.example.fitform.exercise.Type
+import com.example.fitform.fragment.CameraFragment
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
@@ -51,7 +53,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         super.draw(canvas)
         results?.let { poseLandmarkerResult ->
 
-            val specificLandmarkIndices = listOf(24, 26, 28, 23, 25, 27)
+            var specificLandmarkIndices: List<Int>
+            //if (CameraFragment.exerciseType == Type.Squats) specificLandmarkIndices = listOf(24, 26, 28, 23, 25, 27)
+            //else specificLandmarkIndices = listOf(11, 13, 15, 12, 14, 16)
+            specificLandmarkIndices = listOf(-1)
 
             for(landmark in poseLandmarkerResult.landmarks()) {
                 for ((index, normalizedLandmark) in landmark.withIndex()) {

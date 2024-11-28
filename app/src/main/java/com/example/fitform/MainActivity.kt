@@ -1,8 +1,10 @@
 package com.example.fitform
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -11,6 +13,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.fitform.databinding.ActivityMainBinding
+import com.example.fitform.exercise.Type
 import com.example.fitform.fragment.CameraFragment
 import com.google.android.material.navigation.NavigationView
 
@@ -51,6 +54,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container1, CameraFragment()) // Default fragment for secondary container
             .commit()
+    }
+
+    fun onSquatsButtonClick(view: View) {
+        CameraFragment.exerciseType = Type.Squats
+        Log.d("Test", "squatsButton")
+    }
+
+    fun onPushupsButtonClick(view: View) {
+        CameraFragment.exerciseType = Type.Pushups
+        Log.d("Test", "pushupsButton")
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
