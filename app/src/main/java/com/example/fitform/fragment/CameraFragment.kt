@@ -383,7 +383,8 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 if (exerciseType == Type.Squats) exerciseInfo = situpsTracker.track(resultBundle)
                 else exerciseInfo = pushUpTracker.track(resultBundle)
 
-                fragmentCameraBinding.countText.text = exerciseInfo.count.toString()
+                fragmentCameraBinding.countText.text = "Form Detected"
+                //fragmentCameraBinding.countText.text = exerciseInfo.count.toString()
                 fragmentCameraBinding.circularProgressBar.progress = exerciseInfo.progress.toFloat()
                 if (exerciseInfo.direction)
                 {
