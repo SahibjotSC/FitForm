@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.Button
 import android.widget.Toast
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.Camera
@@ -26,10 +25,11 @@ import com.example.fitform.MainViewModel
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
+import com.example.fitform.exercise.Lunges
 import com.example.fitform.exercise.Pushups
-import com.example.fitform.exercise.Situps
-import com.example.fitform.exercise.Stats
-import com.example.fitform.exercise.Type
+import com.example.fitform.exercise.Squats
+import com.example.fitform.exercise.helper.Stats
+import com.example.fitform.exercise.helper.Type
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import java.util.Locale
 import java.util.concurrent.ExecutorService
@@ -41,10 +41,10 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
     companion object {
         private const val TAG = "Pose Landmarker"
         var exerciseType: Type = Type.Squats
+        val squatTracker = Squats()
+        val pushUpTracker = Pushups()
+        val lungeTracker = Lunges()
     }
-
-    private val situpsTracker = Situps()
-    private val pushUpTracker = Pushups()
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
 
@@ -379,24 +379,22 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 fragmentCameraBinding.bottomSheetLayout.inferenceTimeVal.text =
                     String.format("%d ms", resultBundle.inferenceTime)
 
-                var exerciseInfo: Stats
-                if (exerciseType == Type.Squats) exerciseInfo = situpsTracker.track(resultBundle)
-                else exerciseInfo = pushUpTracker.track(resultBundle)
+                var exerciseInfo: Stats =
+                    Stats(0, 0.0, false, "")
+
+                if (exerciseType == Type.Squats) exerciseInfo = squatTracker.track(resultBundle)
+                else if (exerciseType == Type.Pushups) exerciseInfo = pushUpTracker.track(resultBundle)
+                else if (exerciseType == Type.Lunges) exerciseInfo = lungeTracker.track(resultBundle)
 
                 fragmentCameraBinding.countText.text = exerciseInfo.count.toString()
-                fragmentCameraBinding.circularProgressBar.progress = exerciseInfo.progress.toFloat()
-                if (exerciseInfo.direction)
-                {
-                    fragmentCameraBinding.circularProgressBar.progressBarColor = Color.GREEN
-                }
-                else
-                {
-                    fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
-                }
-                fragmentCameraBinding.tipText.text = "Form Detected"
-                //fragmentCameraBinding.tipText.text = exerciseInfo.tip
+                fragmentCameraBinding.circularProgressBar.progress = exerciseInfo.finalProgress.toFloat()
 
-                // Pass necessary information to OverlayView for drawing on the canvas
+                if (exerciseInfo.direction) fragmentCameraBinding.circularProgressBar.progressBarColor = Color.GREEN
+                else fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
+
+                //fragmentCameraBinding.tipText.text = "Form Detected"
+                fragmentCameraBinding.tipText.text = exerciseInfo.tip
+
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),
                     resultBundle.inputImageHeight,
