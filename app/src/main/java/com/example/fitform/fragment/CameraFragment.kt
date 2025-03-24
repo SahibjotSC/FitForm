@@ -25,6 +25,7 @@ import com.example.fitform.MainViewModel
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
 import com.example.fitform.databinding.FragmentCameraBinding
+import com.example.fitform.exercise.JumpingJacks
 import com.example.fitform.exercise.Lunges
 import com.example.fitform.exercise.Pushups
 import com.example.fitform.exercise.Squats
@@ -44,6 +45,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         val squatTracker = Squats()
         val pushUpTracker = Pushups()
         val lungeTracker = Lunges()
+        val jumpingJacksTracker = JumpingJacks()
     }
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
@@ -385,6 +387,7 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
                 if (exerciseType == Type.Squats) exerciseInfo = squatTracker.track(resultBundle)
                 else if (exerciseType == Type.Pushups) exerciseInfo = pushUpTracker.track(resultBundle)
                 else if (exerciseType == Type.Lunges) exerciseInfo = lungeTracker.track(resultBundle)
+                else if (exerciseType == Type.JumpingJacks) exerciseInfo = jumpingJacksTracker.track(resultBundle)
 
                 fragmentCameraBinding.countText.text = exerciseInfo.count.toString()
                 fragmentCameraBinding.circularProgressBar.progress = exerciseInfo.finalProgress.toFloat()

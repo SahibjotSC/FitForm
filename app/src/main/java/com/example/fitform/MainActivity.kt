@@ -2,7 +2,6 @@ package com.example.fitform
 
 import android.content.Intent
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -17,12 +16,9 @@ import com.example.fitform.databinding.ActivityMainBinding
 import com.example.fitform.exercise.helper.Type
 import com.example.fitform.fragment.CameraFragment
 import com.google.android.material.navigation.NavigationView
-import java.util.Locale
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    private var text_to_speech : TextToSpeech? = null
 
     private var drawerLayout: DrawerLayout? = null
     private lateinit var activityMainBinding: ActivityMainBinding
@@ -59,30 +55,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .replace(R.id.fragment_container1, CameraFragment()) // Default fragment for secondary container
             .commit()
 
-        text_to_speech = TextToSpeech(this, TextToSpeech.OnInitListener {
-            onInit(it)
-        })
+        TextToSpeech.initialize(this)
     }
 
     fun onSquatsButtonClick(view: View) {
         CameraFragment.exerciseType = Type.Squats
         CameraFragment.squatTracker.count = 0
         CameraFragment.squatTracker.direction = false
-        speak("Hello")
+        TextToSpeech.speak("Starting Squats")
     }
 
     fun onPushupsButtonClick(view: View) {
         CameraFragment.exerciseType = Type.Pushups
         CameraFragment.pushUpTracker.count = 0
         CameraFragment.pushUpTracker.direction = false
-        speak("Hello")
+        TextToSpeech.speak("Starting Pushups")
     }
 
     fun onLungesButtonClick(view: View) {
         CameraFragment.exerciseType = Type.Lunges
         CameraFragment.lungeTracker.count = 0
         CameraFragment.lungeTracker.direction = false
-        speak("Hello")
+        TextToSpeech.speak("Starting Lunges")
+    }
+
+    fun onJumpingJacksButtonClick(view: View) {
+        CameraFragment.exerciseType = Type.JumpingJacks
+        CameraFragment.lungeTracker.count = 0
+        CameraFragment.lungeTracker.direction = false
+        TextToSpeech.speak("Starting JumpingJacks")
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -115,20 +116,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
             finish()
         }
-    }
-
-    private fun onInit(status: Int) {
-        if (status == TextToSpeech.SUCCESS) {
-            val result = text_to_speech!!.setLanguage(Locale.US)
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(this, "Language not supported", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    fun speak(text: String?) {
-        text_to_speech?.setSpeechRate(1.0f)
-        text_to_speech?.setPitch(1.0f)
-        text_to_speech!!.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 }
