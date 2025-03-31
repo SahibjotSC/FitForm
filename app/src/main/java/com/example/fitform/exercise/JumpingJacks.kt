@@ -1,6 +1,7 @@
 package com.example.fitform.exercise
 
 import com.example.fitform.PoseLandmarkerHelper
+import com.example.fitform.TextToSpeech
 import com.example.fitform.exercise.helper.AngleManager
 import com.example.fitform.exercise.helper.Stats
 
@@ -8,6 +9,7 @@ class JumpingJacks {
 
     var count = 0
     var direction = false
+    private var hasSpokenVisibilityWarning = false
 
     private val maxHistorySize = 10
 
@@ -26,7 +28,13 @@ class JumpingJacks {
         }
 
         if (notVisible) {
+            if (!hasSpokenVisibilityWarning) {
+                TextToSpeech.speak("Please stand fully in front of the camera")
+                hasSpokenVisibilityWarning = true
+            }
             return Stats(count, 0.0, direction, "Tip: Make sure your whole body is visible to the camera.")
+        } else {
+            hasSpokenVisibilityWarning = false
         }
 
         leftArmManager.addAngle(lmList)
