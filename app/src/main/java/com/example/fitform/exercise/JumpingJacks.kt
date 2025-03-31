@@ -20,30 +20,33 @@ class JumpingJacks {
     fun track(resultBundle: PoseLandmarkerHelper.ResultBundle): Stats {
         val lmList = resultBundle.results.firstOrNull()?.landmarks()?.firstOrNull() ?: emptyList()
 
-        if (lmList.isNotEmpty()) {
-            leftArmManager.addAngle(lmList)
-            rightArmManager.addAngle(lmList)
-            leftLegManager.addAngle(lmList)
-            rightLegManager.addAngle(lmList)
+        val neededIndexes = listOf(11, 13, 15, 12, 14, 16, 23, 25, 27, 24, 26, 28)
+        val notVisible = neededIndexes.any { index ->
+            index >= lmList.size || lmList[index].visibility().orElse(0.0f) < 0.5
         }
 
-        // Calculate progress based on arms and legs
+        if (notVisible) {
+            return Stats(count, 0.0, direction, "Tip: Make sure your whole body is visible to the camera.")
+        }
+
+        leftArmManager.addAngle(lmList)
+        rightArmManager.addAngle(lmList)
+        leftLegManager.addAngle(lmList)
+        rightLegManager.addAngle(lmList)
+
         val armProgress = (leftArmManager.progress + rightArmManager.progress) / 2
         val legProgress = (leftLegManager.progress + rightLegManager.progress) / 2
 
-        // Jump cycle detected: arms up, legs wide (max extension)
         if (armProgress >= 90.0 && legProgress >= 80.0 && !direction) {
             count++
             direction = true
-        } 
-        // Reset when arms and legs return to starting position
-        else if (armProgress <= 30.0 && legProgress <= 20.0) {
+        } else if (armProgress <= 30.0 && legProgress <= 20.0) {
             direction = false
         }
 
-        val tip = "Tip: Ensure full arm extension & proper leg spread.\n" +
-                  "Arms Progress: $armProgress%\n" +
-                  "Legs Progress: $legProgress%"
+        val tip = "Tip: Ensure fuller arm extension & proper leg spread.\n" +
+                "Arms Progress: $armProgress%\n" +
+                "Legs Progress: $legProgress%"
 
         return Stats(count, (armProgress + legProgress) / 2, direction, tip)
     }
