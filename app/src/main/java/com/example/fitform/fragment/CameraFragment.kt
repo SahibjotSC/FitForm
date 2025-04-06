@@ -1,6 +1,7 @@
 package com.example.fitform.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import com.example.fitform.MainActivity
 import com.example.fitform.MainViewModel
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.R
@@ -37,15 +39,15 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
+class CameraFragment(private val context: Context) : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
 
     companion object {
         private const val TAG = "Pose Landmarker"
         var exerciseType: Type = Type.Squats
-        val squatTracker = Squats()
-        val pushUpTracker = Pushups()
-        val lungeTracker = Lunges()
-        val jumpingJacksTracker = JumpingJacks()
+        lateinit var squatTracker: Squats
+        lateinit var pushUpTracker: Pushups
+        lateinit var lungeTracker: Lunges
+        lateinit var jumpingJacksTracker: JumpingJacks
     }
 
     private var _fragmentCameraBinding: FragmentCameraBinding? = null
@@ -114,10 +116,17 @@ class CameraFragment : Fragment(), PoseLandmarkerHelper.LandmarkerListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _fragmentCameraBinding =
-            FragmentCameraBinding.inflate(inflater, container, false)
+        _fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
 
         return fragmentCameraBinding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        squatTracker = Squats(context)
+        pushUpTracker = Pushups(context)
+        lungeTracker = Lunges(context)
+        jumpingJacksTracker = JumpingJacks(context)
     }
 
     @SuppressLint("MissingPermission")
