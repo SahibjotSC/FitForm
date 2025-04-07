@@ -59,6 +59,7 @@ dependencies {
     implementation libs.material.v170
     implementation libs.constraintlayout.v220
     implementation libs.fragment.ktx
+    implementation libs.gridlayout
 
     // Navigation library
     def nav_version = "2.5.3"

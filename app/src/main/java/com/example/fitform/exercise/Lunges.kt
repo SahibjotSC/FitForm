@@ -8,18 +8,16 @@ import com.example.fitform.exercise.helper.AngleManager
 import com.example.fitform.exercise.helper.Stats
 import kotlin.math.min
 import com.example.fitform.TextToSpeech
-import java.util.Date
+import kotlin.math.max
 
 class Lunges(private val context: Context) {
 
     var count = 0
     var direction = false
 
-    var progressMax = 0.0;
-    var notLowEnoughAlert = false
+    var maxProgress = 0.0;
 
     private val maxHistorySize = 10
-    private val recentProgress = mutableListOf<Double>()
     private val leftKneeManager = AngleManager(maxHistorySize, 23, 25, 27, 40.0, 150.0)
     private val rightKneeManager = AngleManager(maxHistorySize, 24, 26, 28, 40.0, 150.0)
     private val leftTorsoManager = AngleManager(maxHistorySize, 12, 24, 26, 90.0, 150.0)
@@ -37,28 +35,21 @@ class Lunges(private val context: Context) {
 
         val torsoProgress = min(leftTorsoManager.progress, rightTorsoManager.progress)
         val progress = (leftKneeManager.progress + rightKneeManager.progress + torsoProgress) / 3.0
-
-        recentProgress.add(progress)
-        if (recentProgress.size > maxHistorySize) {
-            recentProgress.removeAt(0)
-        }
-
-        val averageProgress = recentProgress.average()
-        direction = progress > averageProgress
-
-        if (!direction && progress == 0.0) notLowEnoughAlert = false
-
-        if (!direction && progressMax < 100.0 && !notLowEnoughAlert) {
-            TextToSpeech.speak("Not Low Enough")
-            notLowEnoughAlert = true
-        }
+        maxProgress = max(maxProgress, progress)
 
         if (progress == 100.0 && direction) {
             count++
+            TextToSpeech.speak(count.toString())
             MainActivity.updateDataObject(context, "Lunges")
+        } else if (progress == 0.0 && direction) {
+            if (maxProgress < 100.0 && maxProgress >= 50)
+            {
+                TextToSpeech.speak("Too High")
+                MainActivity.updateErrorDataObject(context, "Lunges")
+            }
+            maxProgress = 0.0
+            direction = false
         }
-
-        if (direction) progressMax = maxOf(progressMax, progress)
 
         val tip = "Tip: " + "\n $progress" + "\n ${leftKneeManager.progress}" + "\n ${rightKneeManager.progress}" + "\n ${leftTorsoManager.progress}"
         return Stats(count, progress, direction, tip)

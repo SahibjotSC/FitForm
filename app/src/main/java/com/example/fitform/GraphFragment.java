@@ -53,13 +53,6 @@ public class GraphFragment extends Fragment {
 
     }
 
-    public static GraphFragment newInstance(String param1, String param2) {
-        GraphFragment fragment = new GraphFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,10 +69,10 @@ public class GraphFragment extends Fragment {
         dataObject = MainActivity.getDataObject(getContext(), "JumpingJacks");
         dataPointsJumpingJacks = dataObject.getDateTimes();
 
-        //dataPointsSquats = generateTestData("Squats");
-        //dataPointsPushups = generateTestData("Pushups");
-        //dataPointsLunges = generateTestData("Lunges");
-        //dataPointsJumpingJacks = generateTestData("JumpingJacks");
+        dataPointsSquats = generateTestData("Squats");
+        dataPointsPushups = generateTestData("Pushups");
+        dataPointsLunges = generateTestData("Lunges");
+        dataPointsJumpingJacks = generateTestData("JumpingJacks");
     }
 
     private List<Date> generateTestData(String type) {

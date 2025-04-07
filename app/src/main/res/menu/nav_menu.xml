@@ -13,6 +13,11 @@
             android:title="Home" />
 
         <item
+            android:id="@+id/nav_dashboard"
+            android:icon="?android:attr/actionModeFindDrawable"
+            android:title="Dashboard" />
+
+        <item
             android:id="@+id/nav_graph"
             android:icon="?android:attr/actionModeFindDrawable"
             android:title="Graph" />

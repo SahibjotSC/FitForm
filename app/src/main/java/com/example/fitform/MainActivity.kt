@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
 
-        Log.d("MainActivitdsdsdy", "onCreate")
         poseLandmarkerHelper = PoseLandmarkerHelper(context = this)
 
         if (savedInstanceState == null) {
@@ -59,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container1, CameraFragment(this)) // Default fragment for secondary container
+            .replace(R.id.fragment_container1, CameraFragment(this))
             .commit()
 
         TextToSpeech.initialize(this)
@@ -80,13 +79,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onLungesButtonClick(view: View) {
-        if (CameraFragment.exerciseType == Type.Lunges) updateDataObject(this, "Lunges")
-        else {
-            CameraFragment.exerciseType = Type.Lunges
-            CameraFragment.lungeTracker.count = 0
-            CameraFragment.lungeTracker.direction = false
-            TextToSpeech.speak("Starting Lunges")
-        }
+        CameraFragment.exerciseType = Type.Lunges
+        CameraFragment.lungeTracker.count = 0
+        CameraFragment.lungeTracker.direction = false
+        TextToSpeech.speak("Starting Lunges")
     }
 
     fun onJumpingJacksButtonClick(view: View) {
@@ -101,6 +97,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container1,
                     CameraFragment(this)
+                ).commit()
+
+            R.id.nav_dashboard -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container1,
+                    DashboardFragment()
                 ).commit()
 
             R.id.nav_graph ->
@@ -145,7 +146,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var loadedDataObject = if (jsonString != null) {
                 gson.fromJson(jsonString, DataObject::class.java)
             } else {
-                DataObject(mutableListOf())
+                DataObject(mutableListOf(), 0f)
             }
 
             return loadedDataObject;
@@ -157,6 +158,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var loadedDataObject = getDataObject(context, key)
 
             loadedDataObject.dateTimes.add(Date())
+
+            val editor = sharedPreferences.edit()
+            editor.putString(key, gson.toJson(loadedDataObject))
+            editor.apply()
+        }
+
+        fun updateErrorDataObject(context: Context, key: String) {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", MODE_PRIVATE)
+            val gson = Gson()
+            var loadedDataObject = getDataObject(context, key)
+
+            loadedDataObject.incorrect++
 
             val editor = sharedPreferences.edit()
             editor.putString(key, gson.toJson(loadedDataObject))
