@@ -16,6 +16,12 @@
 <resources>
     <string name="app_name">FitForm</string>
 
+    <string-array name="graph_types">
+        <item>Line Graph</item>
+        <item>Bar Graph</item>
+        <item>Pie Chart</item>
+    </string-array>
+
     <string name="open_nav">Open Navigation Drawer</string>
     <string name="close_nav">Close Navigation Drawer</string>
 

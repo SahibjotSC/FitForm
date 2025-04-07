@@ -1,0 +1,11 @@
+<!-- res/values/attrs.xml -->
+<resources>
+    <declare-styleable name="CalendarView">
+        <attr name="cv_maxRowCount" format="integer" />
+        <attr name="cv_scrollMode" format="enum">
+            <enum name="continuous" value="0" />
+            <enum name="paged" value="1" />
+        </attr>
+        <attr name="cv_hasBoundaries" format="boolean" />
+    </declare-styleable>
+</resources>

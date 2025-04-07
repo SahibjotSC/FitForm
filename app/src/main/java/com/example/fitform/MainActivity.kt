@@ -1,6 +1,8 @@
 package com.example.fitform
 
-import android.content.Intent
+import com.example.fitform.exercise.helper.DataObject;
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -16,13 +18,15 @@ import com.example.fitform.databinding.ActivityMainBinding
 import com.example.fitform.exercise.helper.Type
 import com.example.fitform.fragment.CameraFragment
 import com.google.android.material.navigation.NavigationView
-
+import com.google.gson.Gson
+import java.util.Date
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     private var drawerLayout: DrawerLayout? = null
     private lateinit var activityMainBinding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
+    lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
 
+        Log.d("MainActivitdsdsdy", "onCreate")
+        poseLandmarkerHelper = PoseLandmarkerHelper(context = this)
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container,
@@ -52,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container1, CameraFragment()) // Default fragment for secondary container
+            .replace(R.id.fragment_container1, CameraFragment(this)) // Default fragment for secondary container
             .commit()
 
         TextToSpeech.initialize(this)
@@ -73,10 +80,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onLungesButtonClick(view: View) {
-        CameraFragment.exerciseType = Type.Lunges
-        CameraFragment.lungeTracker.count = 0
-        CameraFragment.lungeTracker.direction = false
-        TextToSpeech.speak("Starting Lunges")
+        if (CameraFragment.exerciseType == Type.Lunges) updateDataObject(this, "Lunges")
+        else {
+            CameraFragment.exerciseType = Type.Lunges
+            CameraFragment.lungeTracker.count = 0
+            CameraFragment.lungeTracker.direction = false
+            TextToSpeech.speak("Starting Lunges")
+        }
     }
 
     fun onJumpingJacksButtonClick(view: View) {
@@ -89,18 +99,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container,
-                    HomeFragment()
+                .replace(R.id.fragment_container1,
+                    CameraFragment(this)
                 ).commit()
 
-            R.id.nav_settings -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container,
-                    SettingsFragment()
+            R.id.nav_graph ->
+            {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container1,
+                        GraphFragment()
+                    ).commit()
+            }
+
+            R.id.nav_calendar -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container1,
+                    CalendarFragment()
                 ).commit()
 
-            R.id.nav_about -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container,
-                    AboutFragment()
+            R.id.nav_setting -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container1,
+                    SettingFragment(this)
                 ).commit()
 
             R.id.nav_logout -> Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
@@ -115,6 +133,34 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
             finish()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun getDataObject(context: Context, key: String): DataObject {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", MODE_PRIVATE)
+            val gson = Gson()
+            val jsonString = sharedPreferences.getString(key, null)
+            var loadedDataObject = if (jsonString != null) {
+                gson.fromJson(jsonString, DataObject::class.java)
+            } else {
+                DataObject(mutableListOf())
+            }
+
+            return loadedDataObject;
+        }
+
+        fun updateDataObject(context: Context, key: String) {
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", MODE_PRIVATE)
+            val gson = Gson()
+            var loadedDataObject = getDataObject(context, key)
+
+            loadedDataObject.dateTimes.add(Date())
+
+            val editor = sharedPreferences.edit()
+            editor.putString(key, gson.toJson(loadedDataObject))
+            editor.apply()
         }
     }
 }

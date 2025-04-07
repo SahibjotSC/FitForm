@@ -1,10 +1,12 @@
 package com.example.fitform.exercise
 
+import android.content.Context
+import com.example.fitform.MainActivity
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.exercise.helper.AngleManager
 import com.example.fitform.exercise.helper.Stats
 
-class Pushups {
+class Pushups(private val context: Context) {
     
     var count = 0
     var direction = false
@@ -31,6 +33,7 @@ class Pushups {
             if (progress == 100.0 && !direction) {
                 count++
                 direction = true
+                MainActivity.updateDataObject(context, "Pushups")
             } else if (progress == 0.0 && direction) {
                 direction = false
             }

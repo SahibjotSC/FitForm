@@ -1,10 +1,12 @@
 package com.example.fitform.exercise
 
+import android.content.Context
+import com.example.fitform.MainActivity
 import com.example.fitform.PoseLandmarkerHelper
 import com.example.fitform.exercise.helper.AngleManager
 import com.example.fitform.exercise.helper.Stats
 
-class JumpingJacks {
+class JumpingJacks(private val context: Context) {
 
     var count = 0
     var direction = false
@@ -35,6 +37,7 @@ class JumpingJacks {
         if (armProgress >= 90.0 && legProgress >= 80.0 && !direction) {
             count++
             direction = true
+            MainActivity.updateDataObject(context, "JumpingJacks")
         } 
         // Reset when arms and legs return to starting position
         else if (armProgress <= 30.0 && legProgress <= 20.0) {

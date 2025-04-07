@@ -10,17 +10,22 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/nav_home"
-            android:title="Home"/>
+            android:title="Home" />
 
         <item
-            android:id="@+id/nav_settings"
+            android:id="@+id/nav_graph"
+            android:icon="?android:attr/actionModeFindDrawable"
+            android:title="Graph" />
+
+        <item
+            android:id="@+id/nav_calendar"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="Calendar" />
+
+        <item
+            android:id="@+id/nav_setting"
             android:icon="@drawable/nav_settings"
-            android:title="Settings"/>
-
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/nav_about"
-            android:title="About Us"/>
+            android:title="Settings" />
     </group>
     <item
         android:title="">
