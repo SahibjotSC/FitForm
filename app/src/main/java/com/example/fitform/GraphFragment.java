@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.fitform.exercise.helper.DataObject;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -63,10 +64,22 @@ public class GraphFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        dataPointsSquats = generateTestData("Squats");
-        dataPointsPushups = generateTestData("Pushups");
-        dataPointsLunges = generateTestData("Lunges");
-        dataPointsJumpingJacks = generateTestData("JumpingJacks");
+        DataObject dataObject = MainActivity.getDataObject(getContext(), "Squats");
+        dataPointsSquats = dataObject.getDateTimes();
+
+        dataObject = MainActivity.getDataObject(getContext(), "Pushups");
+        dataPointsPushups = dataObject.getDateTimes();
+
+        dataObject = MainActivity.getDataObject(getContext(), "Lunges");
+        dataPointsLunges = dataObject.getDateTimes();
+
+        dataObject = MainActivity.getDataObject(getContext(), "JumpingJacks");
+        dataPointsJumpingJacks = dataObject.getDateTimes();
+
+        //dataPointsSquats = generateTestData("Squats");
+        //dataPointsPushups = generateTestData("Pushups");
+        //dataPointsLunges = generateTestData("Lunges");
+        //dataPointsJumpingJacks = generateTestData("JumpingJacks");
     }
 
     private List<Date> generateTestData(String type) {

@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var drawerLayout: DrawerLayout? = null
     private lateinit var activityMainBinding: ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
+    lateinit var poseLandmarkerHelper: PoseLandmarkerHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +46,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         )
         drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
+
+        Log.d("MainActivitdsdsdy", "onCreate")
+        poseLandmarkerHelper = PoseLandmarkerHelper(context = this)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onLungesButtonClick(view: View) {
-        if (CameraFragment.exerciseType == Type.Lunges) updateDataObject(this, "lunges_data")
+        if (CameraFragment.exerciseType == Type.Lunges) updateDataObject(this, "Lunges")
         else {
             CameraFragment.exerciseType = Type.Lunges
             CameraFragment.lungeTracker.count = 0
@@ -101,16 +105,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             R.id.nav_graph ->
             {
-                Log.d("MainActivity", "Settings selected")
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container1,
                         GraphFragment()
                     ).commit()
             }
 
-            R.id.nav_about -> supportFragmentManager.beginTransaction()
+            R.id.nav_calendar -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container1,
-                    AboutFragment()
+                    CalendarFragment()
+                ).commit()
+
+            R.id.nav_setting -> supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container1,
+                    SettingFragment(this)
                 ).commit()
 
             R.id.nav_logout -> Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
@@ -131,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     companion object {
         @JvmStatic
         fun getDataObject(context: Context, key: String): DataObject {
-            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", MODE_PRIVATE)
             val gson = Gson()
             val jsonString = sharedPreferences.getString(key, null)
             var loadedDataObject = if (jsonString != null) {
@@ -144,7 +152,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         fun updateDataObject(context: Context, key: String) {
-            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+            val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", MODE_PRIVATE)
             val gson = Gson()
             var loadedDataObject = getDataObject(context, key)
 
