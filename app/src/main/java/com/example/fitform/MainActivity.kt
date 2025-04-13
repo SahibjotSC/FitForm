@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         CameraFragment.exerciseType = Type.Squats
         CameraFragment.squatTracker.count = 0
         CameraFragment.squatTracker.direction = false
+        Toast.makeText(this, "Starting Squats", Toast.LENGTH_LONG).show()
         TextToSpeech.speak("Starting Squats")
     }
 
@@ -81,6 +82,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         CameraFragment.exerciseType = Type.Pushups
         CameraFragment.pushUpTracker.count = 0
         CameraFragment.pushUpTracker.direction = false
+        Toast.makeText(this, "Starting Pushups", Toast.LENGTH_LONG).show()
         TextToSpeech.speak("Starting Pushups")
     }
 
@@ -91,6 +93,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         CameraFragment.exerciseType = Type.Lunges
         CameraFragment.lungeTracker.count = 0
         CameraFragment.lungeTracker.direction = false
+        Toast.makeText(this, "Starting Lunges", Toast.LENGTH_LONG).show()
         TextToSpeech.speak("Starting Lunges")
     }
 
@@ -101,6 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         CameraFragment.exerciseType = Type.JumpingJacks
         CameraFragment.lungeTracker.count = 0
         CameraFragment.lungeTracker.direction = false
+        Toast.makeText(this, "Starting JumpingJacks", Toast.LENGTH_LONG).show()
         TextToSpeech.speak("Starting JumpingJacks")
     }
 
