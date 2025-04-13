@@ -55,7 +55,6 @@
         android:background="@drawable/text_background"
         android:gravity="center"
         android:minHeight="40dp"
-        android:text="Tip: "
         android:textAlignment="center"
         android:textColor="#D1D1D1"
         android:textSize="24sp" />

@@ -119,6 +119,16 @@ class CameraFragment(private val context: Context) : Fragment(), PoseLandmarkerH
     ): View {
         _fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
 
+        poseLandmarkerHelper = PoseLandmarkerHelper(
+            context = context,
+            runningMode = RunningMode.LIVE_STREAM,
+            minPoseDetectionConfidence = viewModel.currentMinPoseDetectionConfidence,
+            minPoseTrackingConfidence = viewModel.currentMinPoseTrackingConfidence,
+            minPosePresenceConfidence = viewModel.currentMinPosePresenceConfidence,
+            currentDelegate = viewModel.currentDelegate,
+            poseLandmarkerHelperListener = this
+        )
+
         return fragmentCameraBinding.root
     }
 
@@ -245,7 +255,7 @@ class CameraFragment(private val context: Context) : Fragment(), PoseLandmarkerH
                 else fragmentCameraBinding.circularProgressBar.progressBarColor = Color.RED
 
                 //fragmentCameraBinding.tipText.text = "Form Detected"
-                fragmentCameraBinding.tipText.text = exerciseInfo.tip
+                //fragmentCameraBinding.tipText.text = exerciseInfo.tip
 
                 fragmentCameraBinding.overlay.setResults(
                     resultBundle.results.first(),

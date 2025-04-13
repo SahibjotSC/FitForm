@@ -19,7 +19,9 @@ import com.example.fitform.exercise.helper.Type
 import com.example.fitform.fragment.CameraFragment
 import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
+import java.util.Calendar
 import java.util.Date
+import com.google.mediapipe.tasks.vision.core.RunningMode
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,8 +49,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout?.addDrawerListener(toggle)
         toggle.syncState()
 
-        poseLandmarkerHelper = PoseLandmarkerHelper(context = this)
-
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container,
@@ -65,6 +65,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onSquatsButtonClick(view: View) {
+        if (CameraFragment.exerciseType == Type.Squats) updateDataObject(this, "Squats")
+        else updateErrorDataObject(this, "Squats")
+
         CameraFragment.exerciseType = Type.Squats
         CameraFragment.squatTracker.count = 0
         CameraFragment.squatTracker.direction = false
@@ -72,6 +75,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onPushupsButtonClick(view: View) {
+        if (CameraFragment.exerciseType == Type.Pushups) updateDataObject(this, "Pushups")
+        else updateErrorDataObject(this, "Pushups")
+
         CameraFragment.exerciseType = Type.Pushups
         CameraFragment.pushUpTracker.count = 0
         CameraFragment.pushUpTracker.direction = false
@@ -79,6 +85,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onLungesButtonClick(view: View) {
+        if (CameraFragment.exerciseType == Type.Lunges) updateDataObject(this, "Lunges")
+        else updateErrorDataObject(this, "Lunges")
+
         CameraFragment.exerciseType = Type.Lunges
         CameraFragment.lungeTracker.count = 0
         CameraFragment.lungeTracker.direction = false
@@ -86,6 +95,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onJumpingJacksButtonClick(view: View) {
+        if (CameraFragment.exerciseType == Type.JumpingJacks) updateDataObject(this, "JumpingJacks")
+        else updateErrorDataObject(this, "JumpingJacks")
+
         CameraFragment.exerciseType = Type.JumpingJacks
         CameraFragment.lungeTracker.count = 0
         CameraFragment.lungeTracker.direction = false
@@ -112,17 +124,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     ).commit()
             }
 
-            R.id.nav_calendar -> supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container1,
-                    CalendarFragment()
-                ).commit()
-
             R.id.nav_setting -> supportFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container1,
                     SettingFragment(this)
                 ).commit()
 
-            R.id.nav_logout -> Toast.makeText(this, "Logout!", Toast.LENGTH_SHORT).show()
+            R.id.nav_logout -> {
+                addRandomDatesToDataObject(this, "Squats")
+                addRandomDatesToDataObject(this, "Pushups")
+                addRandomDatesToDataObject(this, "Lunges")
+                addRandomDatesToDataObject(this, "JumpingJacks")
+                Toast.makeText(this, "Added Random Dates", Toast.LENGTH_SHORT).show()
+            }
         }
         drawerLayout?.closeDrawer(GravityCompat.START)
         return true
@@ -137,6 +150,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    fun addRandomDatesToDataObject(context: Context, key: String) {
+        val sharedPreferences: SharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val dataObject = getDataObject(context, key)
+
+        val calendar = Calendar.getInstance()
+        val currentTime = calendar.timeInMillis
+        val oneWeekAgo = currentTime - (7 * 24 * 60 * 60 * 1000) // 7 days in milliseconds
+
+        val randomCount = (10..20).random()
+        repeat(randomCount) {
+            val randomTime = (oneWeekAgo..currentTime).random()
+            dataObject.dateTimes.add(Date(randomTime))
+        }
+
+        val randomCount2 = (2..8).random()
+        repeat(randomCount2) {
+            val randomTime = (oneWeekAgo..currentTime).random()
+            dataObject.incorrectTimes.add(Date(randomTime))
+        }
+
+        val editor = sharedPreferences.edit()
+        editor.putString(key, gson.toJson(dataObject))
+        editor.apply()
+    }
+
     companion object {
         @JvmStatic
         fun getDataObject(context: Context, key: String): DataObject {
@@ -146,7 +185,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             var loadedDataObject = if (jsonString != null) {
                 gson.fromJson(jsonString, DataObject::class.java)
             } else {
-                DataObject(mutableListOf(), 0f)
+                DataObject(mutableListOf(), mutableListOf())
             }
 
             return loadedDataObject;
@@ -169,7 +208,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val gson = Gson()
             var loadedDataObject = getDataObject(context, key)
 
-            loadedDataObject.incorrect++
+            loadedDataObject.incorrectTimes.add(Date())
 
             val editor = sharedPreferences.edit()
             editor.putString(key, gson.toJson(loadedDataObject))

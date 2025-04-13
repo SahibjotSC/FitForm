@@ -57,81 +57,49 @@ public class GraphFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DataObject dataObject = MainActivity.getDataObject(getContext(), "Squats");
-        dataPointsSquats = dataObject.getDateTimes();
+        String exerciseName = getArguments() != null ? getArguments().getString("exerciseName") : "";
 
-        dataObject = MainActivity.getDataObject(getContext(), "Pushups");
-        dataPointsPushups = dataObject.getDateTimes();
+        dataPointsSquats = new ArrayList<>();
+        dataPointsPushups = new ArrayList<>();
+        dataPointsLunges = new ArrayList<>();
+        dataPointsJumpingJacks = new ArrayList<>();
 
-        dataObject = MainActivity.getDataObject(getContext(), "Lunges");
-        dataPointsLunges = dataObject.getDateTimes();
+        if (exerciseName == "")
+        {
+            DataObject dataObject = MainActivity.getDataObject(getContext(), "Squats");
+            dataPointsSquats = dataObject.getDateTimes();
 
-        dataObject = MainActivity.getDataObject(getContext(), "JumpingJacks");
-        dataPointsJumpingJacks = dataObject.getDateTimes();
+            dataObject = MainActivity.getDataObject(getContext(), "Pushups");
+            dataPointsPushups = dataObject.getDateTimes();
 
-        dataPointsSquats = generateTestData("Squats");
-        dataPointsPushups = generateTestData("Pushups");
-        dataPointsLunges = generateTestData("Lunges");
-        dataPointsJumpingJacks = generateTestData("JumpingJacks");
-    }
+            dataObject = MainActivity.getDataObject(getContext(), "Lunges");
+            dataPointsLunges = dataObject.getDateTimes();
 
-    private List<Date> generateTestData(String type) {
-        List<Date> randomDates = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
-        int count;
-
-        switch (type) {
-            case "Squats":
-                count = 250;
-                for (int i = 0; i < count; i++) {
-                    double randomFactor = Math.exp(-4 * Math.random());
-                    long randomTime = currentTime - (long)(randomFactor * 1000 * 60 * 60 * 24 * 365);
-                    randomDates.add(new Date(randomTime));
-                }
-                break;
-
-            case "Pushups":
-                count = 180;
-                for (int i = 0; i < count; i++) {
-                    double randomFactor = Math.exp(-3 * Math.random());
-                    long randomTime = currentTime - (long)(randomFactor * 1000 * 60 * 60 * 24 * 365);
-                    randomDates.add(new Date(randomTime));
-                }
-                break;
-
-            case "Lunges":
-                count = 120;
-                for (int i = 0; i < count; i++) {
-                    long weekTime = currentTime - (i / 3) * 7 * 24 * 60 * 60 * 1000L;
-                    long randomTime = weekTime - (long)(Math.random() * 24 * 60 * 60 * 1000);
-                    randomDates.add(new Date(randomTime));
-                }
-                break;
-
-            case "JumpingJacks":
-                count = 90;
-                for (int i = 0; i < count; i++) {
-                    long monthTime = currentTime - (i / 3) * 30 * 24 * 60 * 60 * 1000L;
-                    long randomTime = monthTime - (long)(Math.random() * 3 * 24 * 60 * 60 * 1000);
-                    randomDates.add(new Date(randomTime));
-                }
-                break;
-
-            default:
-                count = 100;
-                for (int i = 0; i < count; i++) {
-                    long randomTime = currentTime - (long)(Math.random() * 1000 * 60 * 60 * 24 * 365);
-                    randomDates.add(new Date(randomTime));
-                }
+            dataObject = MainActivity.getDataObject(getContext(), "JumpingJacks");
+            dataPointsJumpingJacks = dataObject.getDateTimes();
+        } else
+        {
+            switch (exerciseName) {
+                case "Squats":
+                    DataObject dataObject = MainActivity.getDataObject(getContext(), "Squats");
+                    dataPointsSquats = dataObject.getDateTimes();
+                    break;
+                case "Pushups":
+                    dataObject = MainActivity.getDataObject(getContext(), "Pushups");
+                    dataPointsPushups = dataObject.getDateTimes();
+                    break;
+                case "Lunges":
+                    dataObject = MainActivity.getDataObject(getContext(), "Lunges");
+                    dataPointsLunges = dataObject.getDateTimes();
+                    break;
+                case "JumpingJacks":
+                    dataObject = MainActivity.getDataObject(getContext(), "JumpingJacks");
+                    dataPointsJumpingJacks = dataObject.getDateTimes();
+                    break;
+                default:
+                    Log.w(TAG, "Unknown exercise name: " + exerciseName);
+            }
         }
-
-        int recentCount = (int)(count * 0.1);
-        for (int i = 0; i < recentCount; i++) {
-            long randomTime = currentTime - (long)(Math.random() * 1000 * 60 * 60 * 3);
-            randomDates.add(new Date(randomTime));
-        }
-
-        return randomDates;
     }
 
     @Override
@@ -141,6 +109,8 @@ public class GraphFragment extends Fragment {
 
         lineChart = view.findViewById(R.id.line_chart);
         sliderXAxisRange = view.findViewById(R.id.slider_x_axis_range);
+
+        sliderXAxisRange.setProgress(50);
 
         ArrayAdapter<CharSequence> adapterGraphType = ArrayAdapter.createFromResource(getContext(),
                 R.array.graph_types, android.R.layout.simple_spinner_item);
@@ -185,10 +155,10 @@ public class GraphFragment extends Fragment {
         xAxis.setDrawAxisLine(true);
         xAxis.setDrawGridLines(true);
         xAxis.setGridColor(Color.DKGRAY);
-        xAxis.setLabelRotationAngle(45f);
+        xAxis.setLabelRotationAngle(67.5f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
-        xAxis.setLabelCount(8, true); // Force exactly 8 labels
+        xAxis.setLabelCount(16, true); // Force exactly 8 labels
 
         // Customize Y-axis (left)
         lineChart.getAxisLeft().setTextColor(Color.WHITE);
@@ -373,56 +343,46 @@ public class GraphFragment extends Fragment {
 
         if (timeUnit <= TimeUnit.MINUTES.toMillis(1)) {
             // For minute-level data, show hours:minutes:seconds
-            sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+            sdf = new SimpleDateFormat("hh:mm:ss a", Locale.getDefault());
         } else if (timeUnit <= TimeUnit.MINUTES.toMillis(10)) {
             // For 10-minute level data, show hours:minutes
-            sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            sdf = new SimpleDateFormat("hh:mm a", Locale.getDefault());
         } else if (timeUnit <= TimeUnit.HOURS.toMillis(1)) {
             // For hour-level data, show day and hour
-            sdf = new SimpleDateFormat("dd, HH:mm", Locale.getDefault());
+            sdf = new SimpleDateFormat("EEE, hh:mm a", Locale.getDefault());
         } else if (timeUnit <= TimeUnit.HOURS.toMillis(6)) {
             // For multi-hour level data, show day and hour
-            sdf = new SimpleDateFormat("MM-dd, HH:00", Locale.getDefault());
+            sdf = new SimpleDateFormat("EEE, MMM dd, hh a", Locale.getDefault());
         } else if (timeUnit <= TimeUnit.DAYS.toMillis(1)) {
             // For day-level data, show month and day
-            sdf = new SimpleDateFormat("MM-dd", Locale.getDefault());
+            sdf = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
         } else if (timeUnit <= TimeUnit.DAYS.toMillis(7)) {
             // For week-level data, show month and day
-            sdf = new SimpleDateFormat("MM-dd", Locale.getDefault());
+            sdf = new SimpleDateFormat("EEE, MMM dd", Locale.getDefault());
         } else {
             // For month-level data, show month and year
-            sdf = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
+            sdf = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
         }
 
         return sdf.format(new Date(timestamp));
     }
 
-    /**
-     * Converts slider progress (0-100) to time unit in milliseconds
-     * Min: 1 minute, Max: 1 month
-     */
     private long getTimeUnitFromProgress(int progress) {
-        // Apply logarithmic scaling to get a more usable range
-        double minMinutes = 1; // 1 minute
-        double maxMonths = 30 * 24 * 60; // 1 month in minutes
-        double logMin = Math.log(minMinutes);
+        // Adjust time unit range from 1 hour to 1 month
+        double minHours = 1; // 1 hour
+        double maxMonths = 30 * 24; // 1 month in hours
+        double logMin = Math.log(minHours);
         double logMax = Math.log(maxMonths);
         double scale = logMin + (logMax - logMin) * (progress / 100.0);
-        return (long) Math.exp(scale) * 60 * 1000; // Convert minutes to milliseconds
+        return (long) Math.exp(scale) * 60 * 60 * 1000; // Convert hours to milliseconds
     }
 
-    /**
-     * Converts slider progress to time window (how far back in time to look)
-     * Min: 10 minutes, Max: 12 months
-     */
     private long getTimeWindowFromProgress(int progress) {
-        // The window should be at least 10x the time unit to make the graph meaningful
         long timeUnit = getTimeUnitFromProgress(progress);
-        long minWindow = Math.max(10 * timeUnit, TimeUnit.MINUTES.toMillis(10)); // At least 10 minutes
-        long maxWindow = 365 * 24 * 60 * 60 * 1000L; // 12 months
+        long minWindow = TimeUnit.DAYS.toMillis(1); // Exactly 1 day minimum
+        long maxWindow = 365 * TimeUnit.DAYS.toMillis(1); // 12 months
 
         // Calculate window size based on slider progress
-        // Use exponential scale for better user control
         double ratio = progress / 100.0;
         double logMin = Math.log(minWindow);
         double logMax = Math.log(maxWindow);

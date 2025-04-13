@@ -41,13 +41,16 @@ class Pushups(private val context: Context) {
                 TextToSpeech.speak(count.toString())
                 MainActivity.updateDataObject(context, "Pushups")
             } else if (progress == 0.0 && direction) {
-                if (maxProgress < 100.0 && maxProgress >= 50)
-                {
-                    TextToSpeech.speak("Too High")
-                    MainActivity.updateErrorDataObject(context, "Pushups")
-                }
-                maxProgress = 0.0
                 direction = false
+                maxProgress = 0.0
+            }
+
+            if (progress <= 25 && maxProgress < 100.0 && maxProgress >= 50) {
+                TextToSpeech.speak("Not Low Enough")
+                MainActivity.updateErrorDataObject(context, "Pushups")
+
+                direction = false
+                maxProgress = 0.0
             }
         }
 

@@ -16,8 +16,8 @@ class Squats(private val context: Context) {
     var maxProgress = 0.0;
 
     private val maxHistorySize = 10
-    private val leftKneeManager = AngleManager(maxHistorySize, 23, 25, 27, 40.0, 150.0)
-    private val rightKneeManager = AngleManager(maxHistorySize, 24, 26, 28, 40.0, 150.0)
+    private val leftKneeManager = AngleManager(maxHistorySize, 23, 25, 27, 50.0, 150.0)
+    private val rightKneeManager = AngleManager(maxHistorySize, 24, 26, 28, 50.0, 150.0)
 
     fun track(resultBundle: PoseLandmarkerHelper.ResultBundle): Stats {
         val lmList = resultBundle.results.firstOrNull()?.landmarks()?.firstOrNull() ?: emptyList()
@@ -36,13 +36,16 @@ class Squats(private val context: Context) {
             TextToSpeech.speak(count.toString())
             MainActivity.updateDataObject(context, "Squats")
         } else if (progress == 0.0 && direction) {
-            if (maxProgress < 100.0 && maxProgress >= 50)
-            {
-                TextToSpeech.speak("Too High")
-                MainActivity.updateErrorDataObject(context, "Squats")
-            }
-            maxProgress = 0.0
             direction = false
+            maxProgress = 0.0
+        }
+
+        if (progress <= 25 && maxProgress < 100.0 && maxProgress >= 50) {
+            TextToSpeech.speak("Not Low Enough")
+            MainActivity.updateErrorDataObject(context, "Squats")
+
+            direction = false
+            maxProgress = 0.0
         }
 
         val tip = "Tip: " + "\n $progress" + "\n ${leftKneeManager.progress}" + "\n ${rightKneeManager.progress}"
