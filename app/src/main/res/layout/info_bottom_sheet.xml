@@ -112,7 +112,7 @@
                         android:id="@+id/image2"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
-                        android:background="@drawable/squats"
+                        android:background="@drawable/lunges"
                         android:scaleType="centerCrop" />
 
                     <TextView

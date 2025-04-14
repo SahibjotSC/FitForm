@@ -3,20 +3,24 @@ package com.example.fitform.exercise
 import android.content.Context
 import com.example.fitform.MainActivity
 import com.example.fitform.PoseLandmarkerHelper
+import com.example.fitform.TextToSpeech
 import com.example.fitform.exercise.helper.AngleManager
 import com.example.fitform.exercise.helper.Stats
+import kotlin.math.max
 
 class JumpingJacks(private val context: Context) {
 
     var count = 0
     var direction = false
 
-    private val maxHistorySize = 10
+    var maxProgress = 0.0;
+
+    private val maxHistorySize = 1
 
     // Track arm and leg positions
-    private val leftArmManager = AngleManager(maxHistorySize, 11, 13, 15, 30.0, 170.0)
-    private val rightArmManager = AngleManager(maxHistorySize, 12, 14, 16, 30.0, 170.0)
-    private val leftLegManager = AngleManager(maxHistorySize, 23, 25, 27, 20.0, 80.0)
+    private val leftArmManager = AngleManager(maxHistorySize, 13, 11, 23, 140.0, 50.0)
+    private val rightArmManager = AngleManager(maxHistorySize, 14, 12, 24, 140.0, 40.0)
+    private val leftLegManager = AngleManager(maxHistorySize, 23, 24, 26, 110.0, 95.0)
     private val rightLegManager = AngleManager(maxHistorySize, 24, 26, 28, 20.0, 80.0)
 
     fun track(resultBundle: PoseLandmarkerHelper.ResultBundle): Stats {
@@ -33,21 +37,28 @@ class JumpingJacks(private val context: Context) {
         val armProgress = (leftArmManager.progress + rightArmManager.progress) / 2
         val legProgress = (leftLegManager.progress + rightLegManager.progress) / 2
 
-        // Jump cycle detected: arms up, legs wide (max extension)
-        if (armProgress >= 90.0 && legProgress >= 80.0 && !direction) {
+        //val progress = (armProgress.progress + legProgress.progress) / 2
+        val progress = (leftArmManager.progress + leftLegManager.progress) / 2
+        maxProgress = max(maxProgress, progress)
+
+        if (progress == 100.0 && !direction) {
             count++
             direction = true
+            TextToSpeech.speak(count.toString())
             MainActivity.updateDataObject(context, "JumpingJacks")
-        } 
-        // Reset when arms and legs return to starting position
-        else if (armProgress <= 30.0 && legProgress <= 20.0) {
+        } else if (progress == 0.0 && direction) {
             direction = false
+            maxProgress = 0.0
         }
 
-        val tip = "Tip: Ensure full arm extension & proper leg spread.\n" +
-                  "Arms Progress: $armProgress%\n" +
-                  "Legs Progress: $legProgress%"
+        if (progress <= 25 && maxProgress < 100.0 && maxProgress >= 50) {
+            TextToSpeech.speak("Not far enough")
+            MainActivity.updateErrorDataObject(context, "JumpingJacks")
 
-        return Stats(count, (armProgress + legProgress) / 2, direction, tip)
+            direction = false
+            maxProgress = 0.0
+        }
+
+        return Stats(count, progress, direction, "")
     }
 }

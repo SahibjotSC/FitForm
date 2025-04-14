@@ -54,9 +54,10 @@ class OverlayView(context: Context?, attrs: AttributeSet?) :
         results?.let { poseLandmarkerResult ->
 
             var specificLandmarkIndices: List<Int>
-            if (CameraFragment.exerciseType == Type.Squats) specificLandmarkIndices = listOf(24, 26, 28, 23, 25, 27)
-            else specificLandmarkIndices = listOf(11, 13, 15, 12, 14, 16)
-            //specificLandmarkIndices = listOf(-1)
+            //specificLandmarkIndices = listOf(11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32)
+            //if (CameraFragment.exerciseType == Type.Squats) specificLandmarkIndices = listOf(24, 26, 28, 23, 25, 27)
+            //else specificLandmarkIndices = listOf(11, 13, 15, 12, 14, 16)
+            specificLandmarkIndices = listOf(-1)
 
             for(landmark in poseLandmarkerResult.landmarks()) {
                 for ((index, normalizedLandmark) in landmark.withIndex()) {
